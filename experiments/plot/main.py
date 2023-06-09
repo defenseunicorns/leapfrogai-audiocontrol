@@ -53,6 +53,8 @@ def main():
     # Merge data and basic clean up
     data = aqi_by_cbsa_clean.merge(cbsa_info_clean, left_on='CBSA', right_on='CBSA Name')
 
+    # filter data down to the best state
+    data = data.loc[data['CBSA Name'].str.split(', ').str[1].str.contains("OH")]
     # Plot
     if plot_type_requested == 'heatmap':
         data_set = {
@@ -65,9 +67,9 @@ def main():
             '%d-%d-%d' % (data_set['year'], data_set['mo'], data_set['day'])
         )
 
-    if plot_type_requested == 'scatter':
-        loc_name = 'Columbus, OH'
-        plot_aqi_over_time(data[data['CBSA Name'] == loc_name], loc_name)
+    # if plot_type_requested == 'scatter':
+    #     loc_name = 'Columbus, OH'
+    #     plot_aqi_over_time(data[data['CBSA Name'] == loc_name], loc_name)
 
 
 if __name__ == '__main__':
