@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎙️</text></svg>"
+    />
+    <title>How to record audio from the user's microphone</title>
+  </head>
+  <body>
+    <h1>How to record audio from the user's microphone</h1>
+    <button id="startMicrophoneButton">Start using microphone</button>
+    <button id="stopMicrophoneButton" disabled>Stop using microphone</button>
+    <button id="startRecordButton" disabled>Start recording</button>
+    <button id="stopRecordButton" disabled>Stop recording</button>
+    <pre id="logs"></pre>
+  </body>
+</html>
+<script>
+  const startMicrophoneButton = document.querySelector('#startMicrophoneButton');
+const stopMicrophoneButton = document.querySelector('#stopMicrophoneButton');
+const startRecordButton = document.querySelector('#startRecordButton');
+const stopRecordButton = document.querySelector('#stopRecordButton');
+
+let stream;
+let recorder;
+
+startMicrophoneButton.addEventListener("click", async () => {
+  // Prompt the user to use their microphone.
+  var options = {mimeType: 'audio/webm;codecs=opus'};
+  stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  recorder = new MediaRecorder(stream, options);
+
+  stopMicrophoneButton.disabled = false;
+  startRecordButton.disabled = false;
+  log("Your microphone audio is being used.");
+});
+
+stopMicrophoneButton.addEventListener("click", () => {
+  // Stop the stream.
+  stream.getTracks().forEach(track => track.stop());
+
+  startRecordButton.disabled = true;
+  stopRecordButton.disabled = true;
+  log("Your microphone audio is not used anymore.");
+});
+
+startRecordButton.addEventListener("click", async () => {
+  // For the sake of more legible code, this sample only uses the
+  // `showSaveFilePicker()` method. In production, you need to
+  // cater for browsers that don't support this method, as
+  // outlined in https://web.dev/patterns/files/save-a-file/.
+
+  // Prompt the user to choose where to save the recording file.
+  const suggestedName = "microphone-recording.webm";
+  const handle = await window.showSaveFilePicker({ suggestedName });
+  const writable = await handle.createWritable();
+
+  // Start recording.
+  recorder.start();
+  recorder.addEventListener("dataavailable", async (event) => {
+    // Write chunks to the file.
+    await writable.write(event.data);
+    if (recorder.state === "inactive") {
+      // Close the file when the recording stops.
+      await writable.close();
+    }
+  });
+
+  stopRecordButton.disabled = false;
+  log("Your microphone audio is being recorded locally.");
+});
+
+stopRecordButton.addEventListener("click", () => {
+  // Stop the recording.
+  recorder.stop();
+
+  stopRecordButton.disabled = true;
+  log("Your microphone audio has been successfully recorded locally.");
+});
+
+</script>
