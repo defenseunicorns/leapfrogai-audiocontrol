@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "leapfrogai-audiocontrol"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+packages = [{include = "leapfrogai_audiocontrol"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+openai = "^0.27.8"
+gtts = "^2.3.2"
+streamlit = "^1.23.1"
+audio-recorder-streamlit = "^0.0.8"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
