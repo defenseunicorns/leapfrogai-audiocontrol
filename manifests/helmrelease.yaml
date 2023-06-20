@@ -1,0 +1,39 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: audiocontrol
+  namespace: audiocontrol
+spec:
+  targetNamespace: audiocontrol
+  releaseName: audiocontrol
+  interval: 5m
+  timeout: 10m
+  chart:
+    spec:
+      interval: 1m
+      chart: ./chart
+      sourceRef:
+        kind: GitRepository
+        name: audiocontrol
+  test:
+    enable: false
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    remediation:
+      retries: 5
+      remediateLastFailure: true
+    cleanupOnFail: true
+  rollback:
+    timeout: 30m
+    cleanupOnFail: false
+  values:
+    # domain: "###ZARF_VAR_DOMAIN###"
+    ingress:
+      enabled: true
+      hosts: 
+        - host: localhost
+          paths:
+            - path: /
+              pathType: ImplementationSpecific

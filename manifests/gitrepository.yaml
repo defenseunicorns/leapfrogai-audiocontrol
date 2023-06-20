@@ -1,0 +1,10 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: GitRepository
+metadata:
+  name: audiocontrol
+  namespace: audiocontrol
+spec:
+  interval: 1m
+  url: https://github.com/defenseunicorns/leapfrogai-audiocontrol.git
+  ref:
+    name: "###ZARF_CONST_GIT_REF###"

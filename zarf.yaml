@@ -1,0 +1,31 @@
+kind: ZarfPackageConfig
+metadata:
+  name: audiocontrol
+  description: "Deploys LeapfrogAI example audiocontrol app"
+  architecture: amd64
+
+constants:
+  - name: GIT_REF
+    description: "Provide the BRANCH (refs/heads/BRANCH) or TAG (refs/tags/TAG) git ref to identify the git reference to deploy"
+    value: "###ZARF_PKG_TMPL_GIT_REF###"
+
+# variables:
+#   - name: DOMAIN
+#     default: "audiocontrol.bigbang.dev"
+#     prompt: false
+
+components:
+  - name: audiocontrol
+    description: "LeapfrogAI example audiocontrol app"
+    required: true
+    repos:
+      - https://github.com/defenseunicorns/leapfrogai-audiocontrol.git
+    manifests:
+      - name: audiocontrol-helm
+        namespace: audiocontrol
+        files:
+          - manifests/namespace.yaml
+          - manifests/gitrepository.yaml
+          - manifests/helmrelease.yaml
+    images:
+      - "ghcr.io/defenseunicorns/leapfrogai-audiocontrol:v0.1.0"
